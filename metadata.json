@@ -1,0 +1,6 @@
+{
+  "name": "Angelique-Mari Photography",
+  "description": "Refined imagery for brands, people and campaigns.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
