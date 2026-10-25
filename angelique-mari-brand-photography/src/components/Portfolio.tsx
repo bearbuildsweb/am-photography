@@ -1,10 +1,13 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { PROJECTS } from '../data';
 import { CATEGORY_STORIES } from '../data/portfolioStories';
 import { ArrowUpRight, Columns2, Image as ImageIcon, ArrowRight } from 'lucide-react';
 
 type ViewMode = 'both' | 'photo1' | 'photo2';
+
+// Global cache of successfully loaded image URLs to prevent preloader flicker on tab toggles
+const LOADED_IMAGES_CACHE = new Set<string>();
 
 /* Harsh, Raw Cross Close Icon with Square Caps & Heavy Weight */
 function RawHarshCross({ className = 'w-4 h-4' }: { className?: string }) {
@@ -29,24 +32,38 @@ function RawHarshCross({ className = 'w-4 h-4' }: { className?: string }) {
 
 /* Elegant Minimal Editorial Frame with Stuttering Scanline Pre-loader */
 function ContactSheetPrint({ src, isSingle = false, alt = '' }: { src: string; isSingle?: boolean; alt?: string }) {
-  const [loaded, setLoaded] = useState(false);
+  const [loaded, setLoaded] = useState(() => LOADED_IMAGES_CACHE.has(src));
+  const imgRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
-    setLoaded(false);
+    if (LOADED_IMAGES_CACHE.has(src)) {
+      setLoaded(true);
+      return;
+    }
+    if (imgRef.current && imgRef.current.complete && imgRef.current.naturalWidth > 0) {
+      LOADED_IMAGES_CACHE.add(src);
+      setLoaded(true);
+    } else {
+      setLoaded(false);
+    }
   }, [src]);
+
+  const handleLoad = () => {
+    LOADED_IMAGES_CACHE.add(src);
+    setLoaded(true);
+  };
 
   return (
     <div 
       className={`relative ${
         isSingle
-          ? 'p-2.5 sm:p-3.5 md:p-4 max-h-[84vh] min-w-[280px] sm:min-w-[420px] md:min-w-[560px] min-h-[320px] sm:min-h-[460px] md:min-h-[600px]'
-          : 'p-1.5 sm:p-2 md:p-2.5 max-h-[42vh] md:max-h-[82vh] min-w-[240px] sm:min-w-[280px] md:min-w-[340px] min-h-[220px] sm:min-h-[280px] md:min-h-[420px]'
+          ? 'p-2 sm:p-3 md:p-3.5 max-h-[82vh] max-w-[92vw]'
+          : 'p-1.5 sm:p-2 md:p-2.5 max-h-[40vh] md:max-h-[80vh] max-w-[90vw] md:max-w-[45vw]'
       } bg-[#0c0c0e] border border-[#303030] shadow-[inset_0_0_0_1px_rgba(255,255,255,0.05)] flex items-center justify-center overflow-hidden select-none`}
     >
-
       {/* Subtle On-Brand Stuttering Scanline Pre-loader */}
       {!loaded && (
-        <div className="absolute inset-2 sm:inset-3 bg-[#0c0c0e] scanline-grid-pattern overflow-hidden flex flex-col justify-between p-2.5 sm:p-3 z-10 select-none pointer-events-none">
+        <div className="absolute inset-1.5 sm:inset-2 bg-[#080808] scanline-grid-pattern overflow-hidden flex flex-col justify-between p-2.5 sm:p-3 z-10 select-none pointer-events-none w-[70vw] sm:w-[45vw] md:w-[32vw] h-[35vh] sm:h-[45vh] md:h-[62vh]">
           {/* Top Scanline Header Info */}
           <div className="flex items-center justify-between w-full opacity-70">
             <span className="font-mono text-[9px] sm:text-[10px] text-[#FF6800] tracking-[0.2em] uppercase font-bold">
@@ -79,15 +96,16 @@ function ContactSheetPrint({ src, isSingle = false, alt = '' }: { src: string; i
 
       {/* Actual Artwork Image */}
       <img 
+        ref={imgRef}
         src={src} 
         alt={alt} 
         referrerPolicy="no-referrer"
-        onLoad={() => setLoaded(true)}
+        onLoad={handleLoad}
         className={`relative z-10 ${
           isSingle
             ? 'max-h-[78vh] w-auto max-w-[88vw]'
             : 'max-h-[38vh] md:max-h-[76vh] w-auto max-w-[86vw] md:max-w-[44vw]'
-        } object-contain block shadow-none transition-opacity duration-300 ${
+        } object-contain block shadow-none transition-opacity duration-200 ${
           loaded ? 'opacity-100' : 'opacity-0'
         }`}
       />
@@ -277,21 +295,22 @@ export default function Portfolio() {
                 onClick={() => openStoryModal(0)}
               >
                 <div className="relative">
-                  {/* Subtle Archival Corner Brackets (Harmonizing with Hero Piece) */}
-                  <div className="absolute -top-2.5 -left-2.5 w-4 h-4 border-t-2 border-l-2 border-[#FF6800] z-30 pointer-events-none transition-transform duration-500 group-hover:-translate-x-1 group-hover:-translate-y-1" />
-                  <div className="absolute -top-2.5 -right-2.5 w-4 h-4 border-t-2 border-r-2 border-[#FF6800] z-30 pointer-events-none transition-transform duration-500 group-hover:translate-x-1 group-hover:-translate-y-1" />
-                  <div className="absolute -bottom-2.5 -left-2.5 w-4 h-4 border-b-2 border-l-2 border-[#FF6800] z-30 pointer-events-none transition-transform duration-500 group-hover:-translate-x-1 group-hover:translate-y-1" />
-                  <div className="absolute -bottom-2.5 -right-2.5 w-4 h-4 border-b-2 border-r-2 border-[#FF6800] z-30 pointer-events-none transition-transform duration-500 group-hover:translate-x-1 group-hover:translate-y-1" />
+                  {/* Viewfinder Framing Brackets that Snap Inward on Hover */}
+                  <div className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-l-2 border-[#FF6800] z-30 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+                  <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-r-2 border-[#FF6800] z-30 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+                  <div className="absolute -bottom-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-[#FF6800] z-30 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+                  <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-[#FF6800] z-30 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
 
-                  {/* Museum Matting Frame with Direct-Flash Contrast Image */}
-                  <div className="relative w-full aspect-[16/10] bg-white p-2.5 sm:p-3.5 border-4 border-white shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden transition-transform duration-700 ease-out group-hover:scale-[1.01]">
-                    <div className="relative w-full h-full overflow-hidden bg-black">
+                  {/* Fine-Art Gallery Matting Frame with Full-Vibrancy Image */}
+                  <div className="relative w-full aspect-[16/10] bg-[#FAF8F5] p-3 sm:p-4.5 border border-[#E2DDD3] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_20px_rgba(255,104,0,0.06)] group-hover:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden">
+                    <div className="relative w-full h-full overflow-hidden bg-[#101012] border border-black/15 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)]">
                       <motion.img 
                         src={p1.image} 
                         alt={p1.title} 
                         referrerPolicy="no-referrer"
-                        className="w-full h-full object-cover grayscale contrast-110 brightness-95 group-hover:grayscale-0 group-hover:scale-[1.03] transition-all duration-700 ease-out"
+                        className="w-full h-full object-cover brightness-100 contrast-[1.02] group-hover:scale-[1.03] group-hover:brightness-105 transition-all duration-700 ease-out"
                       />
+                      <div className="absolute inset-0 ring-1 ring-inset ring-black/15 pointer-events-none" />
                     </div>
                   </div>
                 </div>
@@ -318,18 +337,21 @@ export default function Portfolio() {
               onClick={() => openStoryModal(1)}
             >
               <div className="relative">
-                {/* Archival Corner Accents */}
-                <div className="absolute -top-2 -left-2 w-3.5 h-3.5 border-t-2 border-l-2 border-[#FF6800]/80 z-20 pointer-events-none" />
-                <div className="absolute -bottom-2 -right-2 w-3.5 h-3.5 border-b-2 border-r-2 border-[#FF6800]/80 z-20 pointer-events-none" />
+                {/* Viewfinder Framing Brackets that Snap Inward on Hover */}
+                <div className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-l-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:translate-y-2.5 group-hover/card:translate-x-2.5 group-hover/card:translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-r-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:translate-y-2.5 group-hover/card:-translate-x-2.5 group-hover/card:translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+                <div className="absolute -bottom-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+                <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:-translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
 
-                <div className="relative w-full aspect-[4/5] bg-white p-2.5 sm:p-3 border-4 border-white shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden transition-transform duration-700 ease-out group-hover/card:scale-[1.01]">
-                  <div className="relative w-full h-full overflow-hidden bg-black">
+                <div className="relative w-full aspect-[4/5] bg-[#FAF8F5] p-3 sm:p-4 border border-[#E2DDD3] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_20px_rgba(255,104,0,0.06)] group-hover/card:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover/card:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden">
+                  <div className="relative w-full h-full overflow-hidden bg-[#101012] border border-black/15 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)]">
                     <motion.img 
                       src={p2.image} 
                       alt={p2.title} 
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover grayscale contrast-105 brightness-95 group-hover/card:grayscale-0 group-hover/card:scale-[1.03] transition-all duration-700 ease-out"
+                      className="w-full h-full object-cover brightness-100 contrast-[1.02] group-hover/card:scale-[1.03] group-hover/card:brightness-105 transition-all duration-700 ease-out"
                     />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-black/15 pointer-events-none" />
                   </div>
                 </div>
               </div>
@@ -395,18 +417,21 @@ export default function Portfolio() {
               onClick={() => openStoryModal(2)}
             >
               <div className="relative">
-                {/* Archival Corner Accents */}
-                <div className="absolute -top-2 -right-2 w-3.5 h-3.5 border-t-2 border-r-2 border-[#FF6800]/80 z-20 pointer-events-none" />
-                <div className="absolute -bottom-2 -left-2 w-3.5 h-3.5 border-b-2 border-l-2 border-[#FF6800]/80 z-20 pointer-events-none" />
+                {/* Viewfinder Framing Brackets that Snap Inward on Hover */}
+                <div className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-l-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:translate-y-2.5 group-hover/card:translate-x-2.5 group-hover/card:translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+                <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-r-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:translate-y-2.5 group-hover/card:-translate-x-2.5 group-hover/card:translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+                <div className="absolute -bottom-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+                <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:-translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
 
-                <div className="relative w-full aspect-[16/10] bg-white p-2.5 sm:p-3.5 border-4 border-white shadow-[0_20px_50px_rgba(0,0,0,0.9)] overflow-hidden transition-transform duration-700 ease-out group-hover/card:scale-[1.01]">
-                  <div className="relative w-full h-full overflow-hidden bg-black">
+                <div className="relative w-full aspect-[16/10] bg-[#FAF8F5] p-3 sm:p-4 border border-[#E2DDD3] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_20px_rgba(255,104,0,0.06)] group-hover/card:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover/card:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden">
+                  <div className="relative w-full h-full overflow-hidden bg-[#101012] border border-black/15 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)]">
                     <motion.img 
                       src={p3.image} 
                       alt={p3.title} 
                       referrerPolicy="no-referrer"
-                      className="w-full h-full object-cover grayscale brightness-95 group-hover/card:grayscale-0 group-hover/card:scale-[1.03] transition-all duration-700 ease-out"
+                      className="w-full h-full object-cover brightness-100 contrast-[1.02] group-hover/card:scale-[1.03] group-hover/card:brightness-105 transition-all duration-700 ease-out"
                     />
+                    <div className="absolute inset-0 ring-1 ring-inset ring-black/15 pointer-events-none" />
                   </div>
                 </div>
               </div>
@@ -477,20 +502,21 @@ export default function Portfolio() {
             onClick={() => openStoryModal(3)}
           >
             <div className="relative">
-              {/* Corner Accents on Expansive Letterbox Frame */}
-              <div className="absolute -top-2.5 -left-2.5 w-4 h-4 border-t-2 border-l-2 border-[#FF6800] z-20 pointer-events-none" />
-              <div className="absolute -top-2.5 -right-2.5 w-4 h-4 border-t-2 border-r-2 border-[#FF6800] z-20 pointer-events-none" />
-              <div className="absolute -bottom-2.5 -left-2.5 w-4 h-4 border-b-2 border-l-2 border-[#FF6800] z-20 pointer-events-none" />
-              <div className="absolute -bottom-2.5 -right-2.5 w-4 h-4 border-b-2 border-r-2 border-[#FF6800] z-20 pointer-events-none" />
+              {/* Viewfinder Framing Brackets that Snap Inward on Hover */}
+              <div className="absolute -top-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-l-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:translate-y-2.5 group-hover/card:translate-x-2.5 group-hover/card:translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+              <div className="absolute -top-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-t-2 border-r-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:translate-y-2.5 group-hover/card:-translate-x-2.5 group-hover/card:translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+              <div className="absolute -bottom-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
+              <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:-translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
 
-              <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-white p-2.5 sm:p-4 border-4 border-white shadow-[0_25px_60px_rgba(0,0,0,0.95)] overflow-hidden transition-transform duration-700 ease-out group-hover/card:scale-[1.01]">
-                <div className="relative w-full h-full overflow-hidden bg-black">
+              <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-[#FAF8F5] p-3 sm:p-4.5 border border-[#E2DDD3] shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_25px_rgba(255,104,0,0.06)] group-hover/card:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover/card:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden">
+                <div className="relative w-full h-full overflow-hidden bg-[#101012] border border-black/15 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)]">
                   <motion.img 
                     src={p4.image} 
                     alt={p4.title} 
                     referrerPolicy="no-referrer"
-                    className="w-full h-full object-cover grayscale brightness-90 contrast-110 group-hover/card:grayscale-0 group-hover/card:scale-[1.03] transition-all duration-700 ease-out"
+                    className="w-full h-full object-cover brightness-100 contrast-[1.02] group-hover/card:scale-[1.03] group-hover/card:brightness-105 transition-all duration-700 ease-out"
                   />
+                  <div className="absolute inset-0 ring-1 ring-inset ring-black/15 pointer-events-none" />
                 </div>
               </div>
             </div>
@@ -654,47 +680,33 @@ export default function Portfolio() {
               className="flex-1 w-full flex items-center justify-center p-2 sm:p-4 my-auto overflow-hidden" 
               onClick={(e) => e.stopPropagation()}
             >
-              <AnimatePresence mode="wait">
-                {viewMode === 'both' && (
-                  <motion.div
-                    key={`both-${activeStoryIndex}`}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 max-w-full max-h-full"
-                  >
-                    <ContactSheetPrint src={currentStory.photo1} isSingle={false} />
-                    <ContactSheetPrint src={currentStory.photo2} isSingle={false} />
-                  </motion.div>
-                )}
+              {viewMode === 'both' && (
+                <div 
+                  key={`both-${activeStoryIndex}`}
+                  className="flex flex-col md:flex-row items-center justify-center gap-4 sm:gap-6 md:gap-8 max-w-full max-h-full transition-opacity duration-150"
+                >
+                  <ContactSheetPrint src={currentStory.photo1} isSingle={false} />
+                  <ContactSheetPrint src={currentStory.photo2} isSingle={false} />
+                </div>
+              )}
 
-                {viewMode === 'photo1' && (
-                  <motion.div
-                    key={`photo1-${activeStoryIndex}`}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex items-center justify-center max-w-full max-h-full"
-                  >
-                    <ContactSheetPrint src={currentStory.photo1} isSingle={true} />
-                  </motion.div>
-                )}
+              {viewMode === 'photo1' && (
+                <div 
+                  key={`photo1-${activeStoryIndex}`}
+                  className="flex items-center justify-center max-w-full max-h-full transition-opacity duration-150"
+                >
+                  <ContactSheetPrint src={currentStory.photo1} isSingle={true} />
+                </div>
+              )}
 
-                {viewMode === 'photo2' && (
-                  <motion.div
-                    key={`photo2-${activeStoryIndex}`}
-                    initial={{ opacity: 0, scale: 0.98 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.98 }}
-                    transition={{ duration: 0.3 }}
-                    className="flex items-center justify-center max-w-full max-h-full"
-                  >
-                    <ContactSheetPrint src={currentStory.photo2} isSingle={true} />
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {viewMode === 'photo2' && (
+                <div 
+                  key={`photo2-${activeStoryIndex}`}
+                  className="flex items-center justify-center max-w-full max-h-full transition-opacity duration-150"
+                >
+                  <ContactSheetPrint src={currentStory.photo2} isSingle={true} />
+                </div>
+              )}
             </div>
 
             {/* Bottom spacer for balance */}
