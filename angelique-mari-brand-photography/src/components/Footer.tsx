@@ -1,4 +1,4 @@
-import { Instagram, Mail } from "lucide-react";
+import { Instagram, Mail, ArrowUpRight } from "lucide-react";
 import logoMain from "../assets/images/logo-main-nobg.png";
 
 function WhatsAppIcon({ className = "w-5 h-5" }: { className?: string }) {
@@ -59,12 +59,12 @@ export default function Footer({ onReviewClick }: FooterProps = {}) {
 
         {/* Top bar replicated from the reference image, without navigation links */}
         <div className="flex flex-col md:flex-row justify-between items-center gap-8 pt-10 md:pt-14 pb-4 w-full">
-          {/* Left Email - Masking Tape Sticker with Orange Zigzag Underline */}
+          {/* Left Email - Archival Airmail Tape with Decorative Postal Elements */}
           <div className="flex-1 flex flex-col items-center md:items-start select-none">
-            {/* Torn Masking Tape Strip */}
-            <div className="relative w-full max-w-[310px] sm:max-w-[340px] transform -rotate-[0.6deg]">
+            {/* Stamped Masking Tape Strip */}
+            <div className="group/email relative w-full max-w-[325px] sm:max-w-[360px] transform -rotate-[0.6deg] hover:rotate-0 transition-transform duration-300">
               <svg
-                viewBox="0 0 350 34"
+                viewBox="0 0 360 36"
                 className="w-full h-auto"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
@@ -73,47 +73,86 @@ export default function Footer({ onReviewClick }: FooterProps = {}) {
               >
                 <defs>
                   <linearGradient id="footerMaskingTapeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                    <stop offset="0%" stopColor="#e8e8e2" />
-                    <stop offset="30%" stopColor="#deded6" />
+                    <stop offset="0%" stopColor="#ebebe5" />
+                    <stop offset="30%" stopColor="#e2e2da" />
                     <stop offset="65%" stopColor="#eaeae4" />
-                    <stop offset="100%" stopColor="#d5d5cd" />
+                    <stop offset="100%" stopColor="#d8d8d0" />
                   </linearGradient>
+                  {/* Airmail Diagonal Stripe Pattern */}
+                  <pattern id="airmailStripes" width="10" height="10" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
+                    <rect width="5" height="10" fill="#FF5500" />
+                    <rect x="5" width="5" height="10" fill="#121214" />
+                  </pattern>
                 </defs>
+
                 {/* Torn Jagged Frayed Edges on Left and Right Ends */}
                 <path
                   d="M 12 3 
-                     L 6 0 L 11 6 L 4 10 L 9 16 L 3 21 L 9 27 L 4 30 L 14 29
-                     L 336 31 
-                     L 344 32 L 340 25 L 347 20 L 341 14 L 346 7 L 340 2 L 336 3
+                     L 6 0 L 11 6 L 4 10 L 9 16 L 3 21 L 9 27 L 4 32 L 14 31
+                     L 346 33 
+                     L 354 34 L 350 27 L 357 21 L 351 15 L 356 8 L 350 2 L 346 3
                      Z"
                   fill="url(#footerMaskingTapeGrad)"
-                  stroke="#555"
+                  stroke="#444"
                   strokeWidth="0.5"
                 />
+
+                {/* Left Airmail Chevrons Decorative Strip */}
+                <path
+                  d="M 12 4 L 7 10 L 10 18 L 5 26 L 13 31 L 22 31 L 22 4 Z"
+                  fill="url(#airmailStripes)"
+                  opacity="0.85"
+                />
+
                 {/* Fibrous tape grain lines */}
-                <line x1="18" y1="11" x2="330" y2="12" stroke="rgba(255,255,255,0.6)" strokeWidth="1" strokeDasharray="16 10" />
-                <line x1="22" y1="22" x2="324" y2="23" stroke="rgba(0,0,0,0.12)" strokeWidth="1" strokeDasharray="12 14" />
+                <line x1="26" y1="12" x2="340" y2="13" stroke="rgba(255,255,255,0.6)" strokeWidth="1" strokeDasharray="16 10" />
+                <line x1="30" y1="24" x2="335" y2="25" stroke="rgba(0,0,0,0.12)" strokeWidth="1" strokeDasharray="12 14" />
+
+                {/* Wavy Postal Cancellation Ink Lines on Right Edge */}
+                <path
+                  d="M 310 10 Q 318 6 326 10 T 342 10 M 310 18 Q 318 14 326 18 T 342 18 M 310 26 Q 318 22 326 26 T 342 26"
+                  stroke="rgba(0,0,0,0.25)"
+                  strokeWidth="1.2"
+                  fill="none"
+                />
               </svg>
 
-              {/* Email Type inside Tape */}
-              <div className="absolute inset-0 flex items-center justify-center px-4 sm:px-5">
+              {/* Email Content inside Tape */}
+              <div className="absolute inset-0 flex items-center justify-between pl-6 sm:pl-7 pr-3 sm:pr-4">
                 <a
                   href="mailto:ang@amstudio.photography"
                   style={{
                     fontFamily: "'Glacial Indifference', sans-serif",
                     fontWeight: 400,
                   }}
-                  className="font-glacial text-xs sm:text-[13px] md:text-[14px] font-normal tracking-[0.08em] lowercase text-black hover:text-[#FF5500] transition-colors select-all flex items-center gap-2 whitespace-nowrap"
-                  title="Email: ang@amstudio.photography"
+                  className="font-glacial text-xs sm:text-[13px] md:text-[14px] font-normal tracking-[0.08em] lowercase text-black hover:text-[#FF5500] transition-colors select-all flex items-center gap-2 sm:gap-2.5 whitespace-nowrap"
+                  title="Compose Email to: ang@amstudio.photography"
                 >
-                  <Mail className="w-3.5 h-3.5 stroke-[1.75] text-black shrink-0" />
-                  <span>ang@amstudio.photography</span>
+                  {/* Distinctive Decorative Mail Envelope Badge */}
+                  <span className="relative flex items-center justify-center w-5 h-5 bg-black text-[#FF6800] border border-black shadow-[1px_1px_0px_rgba(0,0,0,0.4)] group-hover/email:bg-[#FF5500] group-hover/email:text-black transition-colors shrink-0">
+                    <Mail className="w-3 h-3 stroke-[2.2]" />
+                  </span>
+
+                  {/* Stamped EMAIL: Prefix Tag */}
+                  <span className="font-mono text-[9px] font-extrabold text-black/80 uppercase tracking-[0.14em] shrink-0 border-r border-black/30 pr-1.5">
+                    EMAIL
+                  </span>
+
+                  {/* Email Address with Accentuated Orange @ */}
+                  <span className="font-glacial text-black">
+                    ang<span className="font-bold text-[#FF5500] group-hover/email:text-black px-0.5">@</span>amstudio.photography
+                  </span>
                 </a>
+
+                {/* Decorative Tiny Postal Arrow */}
+                <span className="text-black/50 group-hover/email:text-[#FF5500] group-hover/email:translate-x-0.5 transition-all duration-200">
+                  <ArrowUpRight className="w-3.5 h-3.5 stroke-[2.2]" />
+                </span>
               </div>
             </div>
 
             {/* Jagged Hand-Drawn Ink Underline */}
-            <div className="w-full max-w-[270px] sm:max-w-[310px] pl-1 mt-0.5 transform rotate-[0.4deg]">
+            <div className="w-full max-w-[280px] sm:max-w-[320px] pl-1.5 mt-0.5 transform rotate-[0.4deg]">
               <svg
                 viewBox="0 0 320 14"
                 className="w-full h-auto"
@@ -133,26 +172,8 @@ export default function Footer({ onReviewClick }: FooterProps = {}) {
             </div>
           </div>
 
-          {/* Center Direct Review Hash Link to Modal */}
-          <div className="flex items-center gap-3 text-xs font-mono">
-            <a
-              href="#review"
-              onClick={(e) => {
-                if (onReviewClick) {
-                  e.preventDefault();
-                  onReviewClick();
-                } else {
-                  window.location.hash = '#review';
-                }
-              }}
-              className="text-[#FF6800] hover:text-white uppercase tracking-wider font-semibold underline underline-offset-4 transition-colors flex items-center gap-1.5"
-            >
-              <span>+ LEAVE A REVIEW</span>
-            </a>
-          </div>
-
           {/* Social Icons: Instagram and WhatsApp */}
-          <div className="flex justify-center md:justify-end items-center gap-5 flex-1 text-[#FF6800]">
+          <div className="flex justify-center md:justify-end items-center gap-5 select-none text-[#FF6800]">
             <a 
               href="https://www.instagram.com/iambrandthecreative" 
               target="_blank" 
