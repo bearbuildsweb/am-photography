@@ -75,6 +75,8 @@ export default function AboutMe({ onBioModalToggle }: AboutMeProps) {
                   <img
                     src={bioPortrait}
                     alt="Angelique-Mari"
+                    decoding="async"
+                    loading="lazy"
                     className="w-full h-full object-cover object-center filter contrast-[1.02] transition-transform duration-700 group-hover:scale-105"
                     referrerPolicy="no-referrer"
                   />
