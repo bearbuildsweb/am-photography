@@ -56,13 +56,13 @@
   }
 
   html {
-    scroll-behavior: smooth;
     background-color: #000000;
     color: #FF6800;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    -webkit-overflow-scrolling: touch;
   }
   
   body {
