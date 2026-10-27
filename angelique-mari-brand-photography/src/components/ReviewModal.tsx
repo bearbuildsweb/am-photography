@@ -271,8 +271,13 @@ export default function ReviewModal({
       try {
         const stored = localStorage.getItem('am_custom_testimonials');
         const list: Testimonial[] = stored ? JSON.parse(stored) : [];
-        list.unshift(newTestimonial);
-        localStorage.setItem('am_custom_testimonials', JSON.stringify(list));
+        const filtered = list.filter((item) => {
+          const author = (item.author || '').toLowerCase();
+          const quote = (item.quote || '').toLowerCase();
+          return !author.includes('albert') && !author.includes('leeu') && !quote.includes('nnnn');
+        });
+        filtered.unshift(newTestimonial);
+        localStorage.setItem('am_custom_testimonials', JSON.stringify(filtered));
       } catch (err) {
         console.error('Failed to store testimonial locally', err);
       }
