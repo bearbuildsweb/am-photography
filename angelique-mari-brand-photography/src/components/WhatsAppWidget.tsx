@@ -34,7 +34,9 @@ export default function WhatsAppWidget({ isHidden = false }: WhatsAppWidgetProps
 
     checkMobile();
 
-    const handleScroll = () => {
+    let ticking = false;
+
+    const updateSection = () => {
       const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
       // Section detection trigger point (approx 45% of viewport)
       const triggerPoint = viewportHeight * 0.45;
@@ -43,18 +45,29 @@ export default function WhatsAppWidget({ isHidden = false }: WhatsAppWidgetProps
       const aboutEl = document.getElementById('about');
       const bookingEl = document.getElementById('booking');
 
+      let nextSection: SectionKey = 'hero';
       if (bookingEl && bookingEl.getBoundingClientRect().top <= triggerPoint) {
-        setCurrentSection('booking-or-below');
+        nextSection = 'booking-or-below';
       } else if (aboutEl && aboutEl.getBoundingClientRect().top <= triggerPoint) {
-        setCurrentSection('about');
+        nextSection = 'about';
       } else if (portfolioEl && portfolioEl.getBoundingClientRect().top <= triggerPoint) {
-        setCurrentSection('portfolio');
-      } else {
-        setCurrentSection('hero');
+        nextSection = 'portfolio';
+      }
+
+      setCurrentSection((prev) => (prev !== nextSection ? nextSection : prev));
+    };
+
+    const handleScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        window.requestAnimationFrame(() => {
+          updateSection();
+          ticking = false;
+        });
       }
     };
 
-    handleScroll();
+    updateSection();
     window.addEventListener('scroll', handleScroll, { passive: true });
     window.addEventListener('resize', handleScroll, { passive: true });
     window.addEventListener('resize', checkMobile, { passive: true });
@@ -86,7 +99,7 @@ export default function WhatsAppWidget({ isHidden = false }: WhatsAppWidgetProps
     <aside
       id="floating-whatsapp-widget"
       aria-label="Direct studio conversation"
-      className={`fixed z-[9999] transition-all duration-500 ease-out ${
+      className={`fixed z-[9999] transform-gpu will-change-transform transition-all duration-500 ease-out ${
         shouldHide
           ? 'opacity-0 translate-y-8 pointer-events-none'
           : 'opacity-100 translate-y-0 pointer-events-auto'
