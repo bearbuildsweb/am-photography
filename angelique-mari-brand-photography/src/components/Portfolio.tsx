@@ -287,7 +287,7 @@ export default function Portfolio() {
 
               {/* Right Column: Expansive Framed Museum Artwork */}
               <motion.div 
-                className="lg:col-span-7 group cursor-pointer order-1 lg:order-2"
+                className="lg:col-span-7 group cursor-pointer order-1 lg:order-2 transform-gpu"
                 initial={{ opacity: 0, y: 28 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: '-50px' }}
@@ -302,11 +302,13 @@ export default function Portfolio() {
                   <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-[#FF6800] z-30 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
 
                   {/* Fine-Art Gallery Matting Frame with Full-Vibrancy Image */}
-                  <div className="relative w-full aspect-[16/10] bg-[#FAF8F5] p-3 sm:p-4.5 border border-[#E2DDD3] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_20px_rgba(255,104,0,0.06)] group-hover:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden">
+                  <div className="relative w-full aspect-[16/10] bg-[#FAF8F5] p-3 sm:p-4.5 border border-[#E2DDD3] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_20px_rgba(255,104,0,0.06)] group-hover:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden transform-gpu">
                     <div className="relative w-full h-full overflow-hidden bg-[#101012] border border-black/15 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)]">
-                      <motion.img 
+                      <img 
                         src={p1.image} 
                         alt={p1.title} 
+                        decoding="async"
+                        loading="lazy"
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover brightness-100 contrast-[1.02] group-hover:scale-[1.03] group-hover:brightness-105 transition-all duration-700 ease-out"
                       />
@@ -329,7 +331,7 @@ export default function Portfolio() {
           {/* Left Diptych Frame: YOUR STAGE (Vertical 4:5 portrait) */}
           {p2 && (
             <motion.div 
-              className="lg:col-span-5 flex flex-col group/card cursor-pointer"
+              className="lg:col-span-5 flex flex-col group/card cursor-pointer transform-gpu"
               initial={{ opacity: 0, y: 32 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
@@ -343,11 +345,13 @@ export default function Portfolio() {
                 <div className="absolute -bottom-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
                 <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:-translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
 
-                <div className="relative w-full aspect-[4/5] bg-[#FAF8F5] p-3 sm:p-4 border border-[#E2DDD3] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_20px_rgba(255,104,0,0.06)] group-hover/card:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover/card:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden">
+                <div className="relative w-full aspect-[4/5] bg-[#FAF8F5] p-3 sm:p-4 border border-[#E2DDD3] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_20px_rgba(255,104,0,0.06)] group-hover/card:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover/card:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden transform-gpu">
                   <div className="relative w-full h-full overflow-hidden bg-[#101012] border border-black/15 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)]">
-                    <motion.img 
+                    <img 
                       src={p2.image} 
                       alt={p2.title} 
+                      decoding="async"
+                      loading="lazy"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover brightness-100 contrast-[1.02] group-hover/card:scale-[1.03] group-hover/card:brightness-105 transition-all duration-700 ease-out"
                     />
@@ -409,7 +413,7 @@ export default function Portfolio() {
           {/* Right Diptych Frame: FAMILY MOMENTS (Horizontal 16:10 frame offset higher) */}
           {p3 && (
             <motion.div 
-              className="lg:col-span-7 flex flex-col group/card cursor-pointer lg:pt-14"
+              className="lg:col-span-7 flex flex-col group/card cursor-pointer lg:pt-14 transform-gpu"
               initial={{ opacity: 0, y: 36 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
@@ -423,11 +427,13 @@ export default function Portfolio() {
                 <div className="absolute -bottom-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
                 <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:-translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
 
-                <div className="relative w-full aspect-[16/10] bg-[#FAF8F5] p-3 sm:p-4 border border-[#E2DDD3] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_20px_rgba(255,104,0,0.06)] group-hover/card:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover/card:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden">
+                <div className="relative w-full aspect-[16/10] bg-[#FAF8F5] p-3 sm:p-4 border border-[#E2DDD3] shadow-[0_20px_50px_rgba(0,0,0,0.85),0_0_20px_rgba(255,104,0,0.06)] group-hover/card:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover/card:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden transform-gpu">
                   <div className="relative w-full h-full overflow-hidden bg-[#101012] border border-black/15 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)]">
-                    <motion.img 
+                    <img 
                       src={p3.image} 
                       alt={p3.title} 
+                      decoding="async"
+                      loading="lazy"
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover brightness-100 contrast-[1.02] group-hover/card:scale-[1.03] group-hover/card:brightness-105 transition-all duration-700 ease-out"
                     />
@@ -494,7 +500,7 @@ export default function Portfolio() {
         {/* ==================================================================== */}
         {p4 && (
           <motion.div 
-            className="group/card cursor-pointer flex flex-col"
+            className="group/card cursor-pointer flex flex-col transform-gpu"
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-50px' }}
@@ -508,11 +514,13 @@ export default function Portfolio() {
               <div className="absolute -bottom-1.5 -left-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-l-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
               <div className="absolute -bottom-1.5 -right-1.5 w-5 h-5 sm:w-6 sm:h-6 border-b-2 border-r-2 border-[#FF6800] z-20 pointer-events-none transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] group-hover:-translate-x-2.5 group-hover:-translate-y-2.5 group-hover/card:-translate-x-2.5 group-hover/card:-translate-y-2.5 drop-shadow-[0_0_6px_rgba(255,104,0,0.6)]" />
 
-              <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-[#FAF8F5] p-3 sm:p-4.5 border border-[#E2DDD3] shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_25px_rgba(255,104,0,0.06)] group-hover/card:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover/card:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden">
+              <div className="relative w-full aspect-[16/9] md:aspect-[21/9] bg-[#FAF8F5] p-3 sm:p-4.5 border border-[#E2DDD3] shadow-[0_25px_60px_rgba(0,0,0,0.85),0_0_25px_rgba(255,104,0,0.06)] group-hover/card:shadow-[0_25px_65px_rgba(0,0,0,0.9),0_0_35px_rgba(255,104,0,0.22)] group-hover/card:border-[#FF6800]/50 transition-all duration-500 ease-out overflow-hidden transform-gpu">
                 <div className="relative w-full h-full overflow-hidden bg-[#101012] border border-black/15 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.2)]">
-                  <motion.img 
+                  <img 
                     src={p4.image} 
                     alt={p4.title} 
+                    decoding="async"
+                    loading="lazy"
                     referrerPolicy="no-referrer"
                     className="w-full h-full object-cover brightness-100 contrast-[1.02] group-hover/card:scale-[1.03] group-hover/card:brightness-105 transition-all duration-700 ease-out"
                   />
