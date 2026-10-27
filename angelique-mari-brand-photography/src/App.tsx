@@ -10,6 +10,7 @@ import AboutMe from './components/AboutMe';
 import ReviewModal from './components/ReviewModal';
 import ClientGalleryModal from './components/ClientGalleryModal';
 import EnquiryForm from './components/EnquiryForm';
+import Reviews from './components/Reviews';
 import Footer from './components/Footer';
 import WhatsAppWidget from './components/WhatsAppWidget';
 
@@ -19,11 +20,23 @@ export default function App() {
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [clientGalleryOpen, setClientGalleryOpen] = useState(false);
 
-  // Hash-based routing synchronization for #review and #client-gallery
+  // Hash-based routing synchronization for #reviews, #review modal, and #client-gallery
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.toLowerCase();
-      if (hash === '#review' || hash === '#review-freelancer' || hash === '#write-review') {
+      if (hash === '#reviews' || hash === '#/reviews') {
+        setReviewModalOpen(false);
+        setClientGalleryOpen(false);
+        setBioModalOpen(false);
+        const scrollToReviews = () => {
+          const el = document.getElementById('reviews');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        };
+        scrollToReviews();
+        setTimeout(scrollToReviews, 100);
+      } else if (hash === '#review' || hash === '#review-freelancer' || hash === '#write-review') {
         setReviewModalOpen(true);
       } else if (hash === '#client-gallery' || hash === '#gallery') {
         setClientGalleryOpen(true);
@@ -81,6 +94,9 @@ export default function App() {
         {/* Stage 4: Enquire (Visual Category Cards & Direct WhatsApp Confirmation) */}
         <EnquiryForm /> 
         
+        {/* Stage 5: Reviews (Inspired by reference, 2 avatars at a time) */}
+        <Reviews onReviewClick={handleOpenReviewModal} />
+
         {/* Editorial Brand Footer */}
         <Footer onReviewClick={handleOpenReviewModal} /> 
       </div>
