@@ -52,6 +52,41 @@ const MONTH_NAMES = [
 
 const WEEKDAY_NAMES = ['MO', 'TU', 'WE', 'TH', 'FR', 'SA', 'SU'];
 
+/* Tactile Masking Tape / Torn Paper Badge for Dynamic Message Spans */
+function MaskingTapeTag({
+  children,
+  tilt = 'rotate-0',
+}: {
+  children: React.ReactNode;
+  tilt?: string;
+}) {
+  return (
+    <span
+      className={`inline-flex items-center align-middle my-1 mx-1 px-2.5 py-0.5 font-mono text-xs sm:text-[13px] font-black text-black select-none transform ${tilt} transition-transform hover:rotate-0`}
+      style={{
+        backgroundColor: '#eae5d9',
+        backgroundImage: `
+          repeating-linear-gradient(90deg, rgba(255,255,255,0.25) 0px, rgba(255,255,255,0.25) 1px, transparent 1px, transparent 6px),
+          linear-gradient(180deg, #f8f6f0 0%, #ece7dd 45%, #ded8cc 100%)
+        `,
+        filter: 'drop-shadow(2px 2px 0px #000000) drop-shadow(0px 2px 4px rgba(0,0,0,0.75))',
+        clipPath: `polygon(
+          0% 3px, 3px 0%,
+          calc(100% - 3px) 0%, 100% 3px,
+          99.1% 22%, 97.4% 48%, 99.2% 76%,
+          100% calc(100% - 3px), calc(100% - 3px) 100%,
+          3px 100%, 0% calc(100% - 3px),
+          0.8% 74%, 2.5% 50%, 0.8% 24%
+        )`,
+      }}
+    >
+      <span className="relative z-10 text-black drop-shadow-[0_0_0.5px_rgba(0,0,0,0.7)] tracking-tight sm:tracking-normal">
+        {children}
+      </span>
+    </span>
+  );
+}
+
 export default function EnquiryForm() {
   const [clientName, setClientName] = useState('');
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>('bride-and-groom-stories');
@@ -113,8 +148,8 @@ export default function EnquiryForm() {
   };
 
   const generateWhatsAppMessage = () => {
-    const trimmedName = clientName.trim() || '[....]';
-    const categoryName = selectedCategory ? selectedCategory.title : 'Photoshoot';
+    const trimmedName = clientName.trim() || '[name]';
+    const categoryName = selectedCategory ? selectedCategory.title : 'FOCUS';
     let message = `Hi Angelique-Mari, my name is ${trimmedName}. I would love to enquire about a ${categoryName} session.`;
     if (selectedDate) {
       message += `\n\nPreferred Date: ${formatDisplayDate(selectedDate)}`;
@@ -192,11 +227,12 @@ export default function EnquiryForm() {
       id="booking"
       className="relative w-full bg-black text-[#FF6800] py-20 sm:py-28 md:py-36 px-6 sm:px-10 md:px-16 z-10 border-t border-[#FF6800]/20 overflow-hidden"
     >
-      {/* Background Architectural Ambient Glow */}
+      {/* Background Architectural Ambient Glow (Isolated on GPU compositor layer) */}
       <div 
-        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none opacity-20 blur-[120px] rounded-full"
+        className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[300px] pointer-events-none opacity-20 blur-[120px] rounded-full transform-gpu will-change-transform"
         style={{
-          background: 'radial-gradient(circle, rgba(255,104,0,0.3) 0%, transparent 70%)'
+          background: 'radial-gradient(circle, rgba(255,104,0,0.3) 0%, transparent 70%)',
+          transform: 'translate3d(-50%, 0, 0)',
         }}
       />
 
@@ -538,16 +574,33 @@ export default function EnquiryForm() {
             {/* Dynamic Real-Time Message Preview */}
             <div className="w-full bg-[#08080a] border border-neutral-800/80 p-3.5 sm:p-4 mt-1">
               <div className="flex items-center justify-between pb-2 mb-2.5 border-b border-neutral-800">
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-[#FF6800]">
+                <span className="font-mono text-xs sm:text-sm font-bold uppercase tracking-[0.22em] text-[#FF6800]">
                   MESSAGE PREVIEW
                 </span>
-                <span className="inline-flex items-center gap-1 font-mono text-[9px] text-emerald-400">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  WHATSAPP READY
+                <span className="relative flex h-2.5 w-2.5 items-center justify-center" aria-label="WhatsApp live status">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.9)]" />
                 </span>
               </div>
-              <div className="bg-black border border-neutral-900 p-3 font-mono text-xs text-neutral-200 leading-relaxed whitespace-pre-wrap">
-                {generateWhatsAppMessage()}
+              <div className="bg-black border border-neutral-900 p-3 sm:p-4 font-mono text-xs sm:text-[13px] text-neutral-300 leading-relaxed sm:leading-loose whitespace-pre-wrap select-text">
+                Hi Angelique-Mari, my name is{' '}
+                <MaskingTapeTag tilt="-rotate-[1.5deg]">
+                  {clientName.trim() ? clientName.trim() : '[name]'}
+                </MaskingTapeTag>
+                . I would love to enquire about a{' '}
+                <MaskingTapeTag tilt="rotate-[1deg]">
+                  {selectedCategory ? selectedCategory.title : '[FOCUS]'}
+                </MaskingTapeTag>{' '}
+                session.
+                {selectedDate && (
+                  <>
+                    {'\n\n'}
+                    Preferred Date:{' '}
+                    <MaskingTapeTag tilt="-rotate-[0.5deg]">
+                      {formatDisplayDate(selectedDate)}
+                    </MaskingTapeTag>
+                  </>
+                )}
               </div>
             </div>
 
@@ -563,7 +616,7 @@ export default function EnquiryForm() {
               <span className="absolute -bottom-1 -right-1 w-2 h-2 border-b-2 border-r-2 border-[#FF6800] group-hover/btn:border-white transition-colors duration-300" />
 
               <span className="relative z-10 select-none">
-                {isRedirecting ? 'CONNECTING...' : 'CONFIRM ON'}
+                {isRedirecting ? 'CONNECTING...' : 'SEND ON'}
               </span>
 
               <WhatsAppIcon className="relative z-10 w-5 h-5 fill-current transition-transform duration-300 group-hover/btn:scale-110" />
