@@ -261,18 +261,19 @@ export default function Hero({
     <section className="relative min-h-screen w-full flex flex-col justify-between bg-black text-[#FF6800] overflow-hidden z-10">
       
       {/* 1. Cinematic Ambient Background (Lightweight, GPU-friendly) */}
-      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden transform-gpu">
         <AnimatePresence mode="wait">
           <motion.img
             key={currentSlide}
             src={activeImage}
             alt=""
+            decoding="async"
             referrerPolicy="no-referrer"
             initial={{ opacity: 0 }}
             animate={{ opacity: 0.12 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 1.2, ease: 'linear' }}
-            className="absolute inset-0 w-full h-full object-cover grayscale brightness-50"
+            className="absolute inset-0 w-full h-full object-cover grayscale brightness-50 will-change-opacity"
           />
         </AnimatePresence>
         
@@ -280,7 +281,7 @@ export default function Hero({
       </div>
 
       {/* 2. Sleek Top Navigation Header */}
-      <header className="relative w-full z-40 px-4 sm:px-6 py-3.5 sm:py-4 md:px-12 flex justify-between items-center border-b border-[#FF6800]/20 bg-black/60 backdrop-blur-md">
+      <header className="relative w-full z-40 px-4 sm:px-6 py-3.5 sm:py-4 md:px-12 flex justify-between items-center border-b border-[#FF6800]/20 bg-black/60 backdrop-blur-md transform-gpu">
         {/* Brand Lockup */}
         <div 
           className="flex items-center gap-3 sm:gap-4 md:gap-5 cursor-pointer group py-1" 
@@ -476,14 +477,16 @@ export default function Hero({
                     >
                       <div className="flex flex-col gap-2.5 pl-8 pt-2 pb-0.5">
                         <a
-                          href="#review"
+                          href="#reviews"
                           onClick={(e) => {
                             setMenuOpen(false);
-                            if (onReviewClick) {
+                            const el = document.getElementById('reviews');
+                            if (el) {
+                              e.preventDefault();
+                              el.scrollIntoView({ behavior: 'smooth' });
+                            } else if (onReviewClick) {
                               e.preventDefault();
                               onReviewClick();
-                            } else {
-                              window.location.hash = '#review';
                             }
                           }}
                           className="group/sub relative flex flex-col items-start transition-all duration-300 ease select-none"
